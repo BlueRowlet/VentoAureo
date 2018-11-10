@@ -270,7 +270,7 @@ public class GameMain extends ApplicationAdapter{
         if(mBluetoothAdapter.isDiscovering()){
             mBluetoothAdapter.cancelDiscovery();
 
-            checkBTPermissions();
+            //checkBTPermissions();
 
 			mBluetoothAdapter.startDiscovery();
             IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
@@ -279,7 +279,7 @@ public class GameMain extends ApplicationAdapter{
         if(!mBluetoothAdapter.isDiscovering()){
 			mBluetoothAdapter.startDiscovery();
 
-			checkBTPermissions();
+			//checkBTPermissions();
 
             IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             context.registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
@@ -294,12 +294,12 @@ public class GameMain extends ApplicationAdapter{
 		mBluetoothConnection.startClient(device,uuid);
 	}
 
-	public void checkBTPermissions() {
-		if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M){
-			int permissionCheck = context.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
-			permissionCheck += context.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
-		}else{
-			System.out.println("fuck this shit im out");
-		}
-	}
+//	public void checkBTPermissions() {
+//		if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M){
+//			int permissionCheck = context.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
+//			permissionCheck += context.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
+//		}else{
+//			System.out.println("fuck this shit im out");
+//		}
+//	}
 }
