@@ -18,6 +18,12 @@ public class List extends Surface {
         selectedIndex = -1;
     }
 
+    public List(int elementSize){
+        this.elementSize = elementSize;
+        elements = new Array<String>();
+        selectedIndex = -1;
+    }
+
     @Override
     public void update(Input input) {
         if (touchInside(input)) {

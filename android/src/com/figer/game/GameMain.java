@@ -1,11 +1,14 @@
 package com.figer.game;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.widget.Toast;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -35,6 +38,8 @@ public class GameMain extends ApplicationAdapter{
 	private static final UUID MY_UUID_INSECURE = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
 	private BluetoothDevice mBTDevice;
 	private ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
+	private String connectedDevice;
+    private List deviceAddresses;
 
 	/**				GUI Magic					*/
 	// System
@@ -53,8 +58,8 @@ public class GameMain extends ApplicationAdapter{
 		//Bluetooth Magic
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
 		context.registerReceiver(mBroadcastReceiver4, filter);
-
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        deviceAddresses = new List(30);
 
 		//GUI Elements
 		renderer = new Renderer();
@@ -99,7 +104,8 @@ public class GameMain extends ApplicationAdapter{
 			startConnection();
 		}
 		if (deviceList.consumeSignal() != Signal.NULL) {
-			System.out.println(deviceList.getSelectedElement() + " pressed!");
+			connectedDevice = deviceAddresses.getElementByIndex(deviceList.getSelectedIndex());
+			System.out.println(connectedDevice);
 		}
 	}
 
@@ -198,6 +204,7 @@ public class GameMain extends ApplicationAdapter{
 				BluetoothDevice device = intent.getParcelableExtra (BluetoothDevice.EXTRA_DEVICE);
 				mBTDevices.add(device);
 				deviceList.addElement(device.getName());
+				deviceAddresses.addElement(device.getAddress());
 			}
 		}
 	};
@@ -263,12 +270,16 @@ public class GameMain extends ApplicationAdapter{
         if(mBluetoothAdapter.isDiscovering()){
             mBluetoothAdapter.cancelDiscovery();
 
+            checkBTPermissions();
+
 			mBluetoothAdapter.startDiscovery();
             IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             context.registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
         }
         if(!mBluetoothAdapter.isDiscovering()){
 			mBluetoothAdapter.startDiscovery();
+
+			checkBTPermissions();
 
             IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             context.registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
@@ -281,5 +292,14 @@ public class GameMain extends ApplicationAdapter{
 
 	public void startBTConnection(BluetoothDevice device, UUID uuid){
 		mBluetoothConnection.startClient(device,uuid);
+	}
+
+	public void checkBTPermissions() {
+		if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M){
+			int permissionCheck = context.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
+			permissionCheck += context.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
+		}else{
+			System.out.println("fuck this shit im out");
+		}
 	}
 }

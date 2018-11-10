@@ -25,6 +25,12 @@ public abstract class Surface {
         signal = Signal.NULL;
     }
 
+    public Surface (){
+        children = new Array<Surface>();
+        visible = false;
+        signal = Signal.NULL;
+    }
+
     public void draw(Renderer renderer) {
         if (visible) {
             drawBackground(renderer);
