@@ -1,31 +1,142 @@
 package com.figer.game;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Build;
 import android.widget.Toast;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.figer.game.GUI.Button;
+import com.figer.game.GUI.List;
+import com.figer.game.GUI.Signal;
+import com.figer.game.System.Input;
+import com.figer.game.System.Renderer;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class GameMain extends ApplicationAdapter {
-	Toast toast;
-	int duration = Toast.LENGTH_SHORT;
-	Context context;
+public class GameMain extends ApplicationAdapter{
+	//Toast.makeText(context, "", duration).show();
+	private int duration = Toast.LENGTH_SHORT;
+	private Context context;
+	private Intent intent;
+
+    public GameMain(Context context, Intent intent) {
+        this.context = context;
+        this.intent = intent;
+    }
 
 	/**				Bluetooth Magic				*/
-	BluetoothAdapter mBluetoothAdapter;
+	private BluetoothAdapter mBluetoothAdapter;
+	private BluetoothConnection mBluetoothConnection;
 	private static final UUID MY_UUID_INSECURE = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
-	BluetoothDevice mBTDevice;
+	private BluetoothDevice mBTDevice;
 	private ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
+
+	/**				GUI Magic					*/
+	// System
+	private Renderer renderer;
+	private Input input;
+
+	// Main Menu
+	private Button btnOn;
+	private Button btnDiscover;
+	private Button btnSearch;
+	private Button btnConnect;
+	private List deviceList;
+
+	@Override
+	public void create () {
+		//Bluetooth Magic
+		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+		context.registerReceiver(mBroadcastReceiver4, filter);
+
+		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+		//GUI Elements
+		renderer = new Renderer();
+		input = new Input(renderer.getViewport());
+
+		btnOn = new Button(25, 25, 200, 50, "On/Off");
+		btnDiscover = new Button(25, 90, 200, 50, "Enable Discoverability");
+		btnSearch = new Button(25, 155, 200, 50, "Search");
+		btnConnect = new Button(25, 210, 200, 50, "Connect");
+
+		deviceList = new List(300, 25, 200, 30);
+	}
+
+	private void draw() {
+		// Draw
+		btnOn.draw(renderer);
+		btnDiscover.draw(renderer);
+		btnSearch.draw(renderer);
+		btnConnect.draw(renderer);
+		deviceList.draw(renderer);
+	}
+
+	private void update() {
+		// Update
+		btnOn.update(input);
+		btnDiscover.update(input);
+		btnSearch.update(input);
+		btnConnect.update(input);
+		deviceList.update(input);
+
+		// Consume signals
+		if (btnOn.consumeSignal() != Signal.NULL) {
+			enableDisableBT();
+		}
+		if (btnDiscover.consumeSignal() != Signal.NULL) {
+			discoverAbility();
+		}
+		if (btnSearch.consumeSignal() != Signal.NULL) {
+			discover();
+		}
+		if (btnConnect.consumeSignal() != Signal.NULL) {
+			startConnection();
+		}
+		if (deviceList.consumeSignal() != Signal.NULL) {
+			System.out.println(deviceList.getSelectedElement() + " pressed!");
+		}
+	}
+
+	@Override
+	public void dispose () {
+//Destroy Receivers
+		context.unregisterReceiver(mBroadcastReceiver1);
+		context.unregisterReceiver(mBroadcastReceiver2);
+		context.unregisterReceiver(mBroadcastReceiver3);
+		context.unregisterReceiver(mBroadcastReceiver4);
+//Destroy GUI elements
+		renderer.dispose();
+	}
+
+	@Override
+	public void resize(int w, int h) {
+		renderer.resize(w, h);
+	}
+
+	@Override
+	public void render () {
+		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		// Drawing
+		renderer.prepare();
+		renderer.begin();
+		draw(); // The main draw method!
+		renderer.end();
+
+		// Updating
+		update(); // The main update method!
+		input.update();
+	}
 
 	//				BroadcastReceivers				//
 	//ON/OFF
@@ -33,21 +144,19 @@ public class GameMain extends ApplicationAdapter {
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
 			// When discovery finds a device
-			if (action.equals(mBluetoothAdapter.ACTION_STATE_CHANGED)) {
-				final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, mBluetoothAdapter.ERROR);
+			if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+				final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
 
 				switch(state){
 					case BluetoothAdapter.STATE_OFF:
-						toast.makeText(context, "STATE OFF", duration).show();
+						Toast.makeText(context, "Bluetooth is Off", duration).show();
 						break;
 					case BluetoothAdapter.STATE_TURNING_OFF:
-						toast.makeText(context, "STATE TURNING OFF", duration).show();
 						break;
 					case BluetoothAdapter.STATE_ON:
-						toast.makeText(context, "STATE ON", duration).show();
+						Toast.makeText(context, "Bluetooth is On", duration).show();
 						break;
 					case BluetoothAdapter.STATE_TURNING_ON:
-						toast.makeText(context, "STATE TURNING ON", duration).show();
 						break;
 				}
 			}
@@ -68,20 +177,15 @@ public class GameMain extends ApplicationAdapter {
 				switch (mode) {
 					//Device is in Discoverable Mode
 					case BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE:
-						toast.makeText(context, "Discoverability Enabled", duration).show();
 						break;
 					//Device not in discoverable mode
 					case BluetoothAdapter.SCAN_MODE_CONNECTABLE:
-						toast.makeText(context, "Discoverability Disabled. Able to receive connections", duration).show();
 						break;
 					case BluetoothAdapter.SCAN_MODE_NONE:
-						toast.makeText(context, "Discoverability Disabled. Not able to receive connections", duration).show();
 						break;
 					case BluetoothAdapter.STATE_CONNECTING:
-						toast.makeText(context, "Connectiong...", duration).show();
 						break;
 					case BluetoothAdapter.STATE_CONNECTED:
-						toast.makeText(context, "Connected", duration).show();
 						break;
 				}
 
@@ -93,14 +197,11 @@ public class GameMain extends ApplicationAdapter {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			final String action = intent.getAction();
-			toast.makeText(context, "onReceive: ACTION FOUND", duration).show();
 
 			if (action.equals(BluetoothDevice.ACTION_FOUND)){
 				BluetoothDevice device = intent.getParcelableExtra (BluetoothDevice.EXTRA_DEVICE);
 				mBTDevices.add(device);
-				toast.makeText(context, "Device: " + device.getName() + "" + device.getAddress(), duration).show();
-				//mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
-				//lvNewDevices.setAdapter(mDeviceListAdapter);
+				deviceList.addElement(device.getName());
 			}
 		}
 	};
@@ -115,52 +216,74 @@ public class GameMain extends ApplicationAdapter {
 				//3 cases:
 				//case1: bonded already
 				if (mDevice.getBondState() == BluetoothDevice.BOND_BONDED){
-					toast.makeText(context, "BOND_BONDED", duration).show();
 					//inside BroadcastReceiver4
 					mBTDevice = mDevice;
 				}
 				//case2: creating a bone
 				if (mDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
-					toast.makeText(context, "BOND_BONDING", duration).show();
 				}
 				//case3: breaking a bond
 				if (mDevice.getBondState() == BluetoothDevice.BOND_NONE) {
-					toast.makeText(context, "BOND_DONE", duration).show();
 				}
 			}
 		}
 	};
 
-	/**					Damn Graphics				*/
-	SpriteBatch batch;
-	Texture img;
-	
-	@Override
-	public void create () {
-		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+	//OnOff Magic
+	public void enableDisableBT(){
+		if(mBluetoothAdapter == null){
+		    System.out.println("Can't Bluetooth");
+		}
+		if(!mBluetoothAdapter.isEnabled()){
+            System.out.println("Enabling Bluetooth");
+			Intent enableBTIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			context.startActivity(enableBTIntent);
+
+			IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+			context.registerReceiver(mBroadcastReceiver1, BTIntent);
+		}
+		if(mBluetoothAdapter.isEnabled()){
+            System.out.println("Disabling Bluetooth");
+			mBluetoothAdapter.disable();
+
+			IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+			context.registerReceiver(mBroadcastReceiver1, BTIntent);
+		}
+
 	}
 
-	@Override
-	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		batch.end();
-	}
-	
-	@Override
-	public void dispose () {
-//Destroy Receivers
-		toast.makeText(context, "onDestroy: called", duration).show();
-		context.unregisterReceiver(mBroadcastReceiver1);
-		context.unregisterReceiver(mBroadcastReceiver2);
-		context.unregisterReceiver(mBroadcastReceiver3);
-		context.unregisterReceiver(mBroadcastReceiver4);
+	//Discoverability
+	public void discoverAbility() {
+		Intent discoverableIntent = new Intent(mBluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+		discoverableIntent.putExtra(mBluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+		context.startActivity(discoverableIntent);
 
-//Destroy Batches and images
-		batch.dispose();
-		img.dispose();
+		IntentFilter intentFilter = new IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+		context.registerReceiver(mBroadcastReceiver2,intentFilter);
+	}
+
+	//Discover
+    public void discover() {
+        if(mBluetoothAdapter.isDiscovering()){
+            mBluetoothAdapter.cancelDiscovery();
+
+			mBluetoothAdapter.startDiscovery();
+            IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+            context.registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
+        }
+        if(!mBluetoothAdapter.isDiscovering()){
+			mBluetoothAdapter.startDiscovery();
+
+            IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+            context.registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
+        }
+    }
+
+	public void startConnection(){
+		startBTConnection(mBTDevice,MY_UUID_INSECURE);
+	}
+
+	public void startBTConnection(BluetoothDevice device, UUID uuid){
+		mBluetoothConnection.startClient(device,uuid);
 	}
 }
