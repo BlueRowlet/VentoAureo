@@ -1,13 +1,11 @@
 package com.figer.game;
 
-import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.widget.Toast;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -26,11 +24,9 @@ public class GameMain extends ApplicationAdapter{
 	//Toast.makeText(context, "", duration).show();
 	private int duration = Toast.LENGTH_SHORT;
 	private Context context;
-	private Intent intent;
 
-    public GameMain(Context context, Intent intent) {
+    public GameMain(Context context) {
         this.context = context;
-        this.intent = intent;
     }
 
 	/**				Bluetooth Magic				*/

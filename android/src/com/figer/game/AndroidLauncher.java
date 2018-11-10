@@ -13,7 +13,7 @@ public class AndroidLauncher extends AndroidApplication{
 	protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        initialize(new GameMain(this.getContext(), this.getIntent()), config);
+        initialize(new GameMain(this.getContext()), config);
     }
 
     public void checkBTPermissions() {
