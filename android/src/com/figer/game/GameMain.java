@@ -1,24 +1,15 @@
 package com.figer.game;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.widget.Toast;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Array;
-import com.figer.game.GUI.Button;
-import com.figer.game.GUI.List;
-import com.figer.game.GUI.Signal;
+import com.figer.game.Stage.Stage;
+import com.figer.game.Stage.StageManager;
 import com.figer.game.System.Input;
 import com.figer.game.System.Renderer;
-
-import java.util.UUID;
 
 public class GameMain extends ApplicationAdapter{
     public GameMain(Context context) {

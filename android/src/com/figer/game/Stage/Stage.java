@@ -1,4 +1,4 @@
-package com.figer.game;
+package com.figer.game.Stage;
 
 import com.figer.game.System.Input;
 import com.figer.game.System.Renderer;

@@ -1,4 +1,4 @@
-package com.figer.game;
+package com.figer.game.System;
 
 import android.Manifest;
 import android.annotation.TargetApi;

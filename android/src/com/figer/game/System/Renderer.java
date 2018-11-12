@@ -38,6 +38,7 @@ public class Renderer {
     private BitmapFont defaultFont;
     private StringBuilder stringBuilder;
     private GlyphLayout glyphLayout;
+    private AssetPool assetPool;
 
     public Renderer() {
         batch = new SpriteBatch();
@@ -71,6 +72,7 @@ public class Renderer {
 
         stringBuilder = new StringBuilder();
         glyphLayout = new GlyphLayout();
+        assetPool = new AssetPool();
     }
 
     public void begin() {
@@ -176,6 +178,18 @@ public class Renderer {
     }
 
     // *********************************************************************************************
+    // * CUSTOM SHIT
+    // *********************************************************************************************
+
+    public void drawCardBack(float x, float y){
+        this.drawTextureRegion(assetPool.getCardBackRegion(), x, y);
+    }
+
+    public void drawCard(float x, float y, String name) {
+        this.drawTextureRegion(assetPool.getCardRegion(name), x, y);
+    }
+
+    // *********************************************************************************************
     // * HELPERS
     // *********************************************************************************************
 
@@ -200,5 +214,6 @@ public class Renderer {
 
     public void dispose() {
         systemTexture.dispose();
+        assetPool.dispose();
     }
 }

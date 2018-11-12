@@ -1,7 +1,7 @@
 package com.figer.game;
 
-import android.content.Context;
-
+import com.figer.game.Stage.Stage;
+import com.figer.game.Stage.StageManager;
 import com.figer.game.System.Input;
 import com.figer.game.System.Renderer;
 

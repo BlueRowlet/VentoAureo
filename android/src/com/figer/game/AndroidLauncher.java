@@ -1,12 +1,10 @@
 package com.figer.game;
 
-import android.Manifest;
-import android.os.Build;
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.figer.game.GameMain;
+import com.figer.game.System.Permissions;
 
 public class AndroidLauncher extends AndroidApplication{
 	@Override

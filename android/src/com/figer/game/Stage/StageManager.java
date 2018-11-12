@@ -1,4 +1,4 @@
-package com.figer.game;
+package com.figer.game.Stage;
 
 import com.badlogic.gdx.utils.Array;
 
