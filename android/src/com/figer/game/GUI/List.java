@@ -54,6 +54,9 @@ public class List extends Surface {
     }
 
     public void addElement(String element) {
+        for (String s : elements) {
+            if (s.equals(element)) return;
+        }
         elements.add(element);
         resize();
     }

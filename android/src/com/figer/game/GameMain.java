@@ -37,7 +37,6 @@ public class GameMain extends ApplicationAdapter{
 	private BluetoothConnection mBluetoothConnection;
 	private static final UUID MY_UUID_INSECURE = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
 	private BluetoothDevice mBTDevice;
-	private ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
 	private String connectedDevice;
     private List deviceAddresses;
 
@@ -68,7 +67,7 @@ public class GameMain extends ApplicationAdapter{
 		btnOn = new Button(25, 25, 200, 50, "On/Off");
 		btnDiscover = new Button(25, 90, 200, 50, "Enable Discoverability");
 		btnSearch = new Button(25, 155, 200, 50, "Search");
-		btnConnect = new Button(25, 210, 200, 50, "Connect");
+		btnConnect = new Button(25, 220,200, 50, "Connect");
 
 		deviceList = new List(300, 25, 200, 30);
 	}
@@ -202,9 +201,10 @@ public class GameMain extends ApplicationAdapter{
 
 			if (action.equals(BluetoothDevice.ACTION_FOUND)){
 				BluetoothDevice device = intent.getParcelableExtra (BluetoothDevice.EXTRA_DEVICE);
-				mBTDevices.add(device);
-				deviceList.addElement(device.getName());
+				deviceList.addElement(device.getName() + " " + device.getAddress());
 				deviceAddresses.addElement(device.getAddress());
+			} else {
+				//do nothing
 			}
 		}
 	};
@@ -270,16 +270,12 @@ public class GameMain extends ApplicationAdapter{
         if(mBluetoothAdapter.isDiscovering()){
             mBluetoothAdapter.cancelDiscovery();
 
-            //checkBTPermissions();
-
 			mBluetoothAdapter.startDiscovery();
             IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             context.registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
         }
         if(!mBluetoothAdapter.isDiscovering()){
 			mBluetoothAdapter.startDiscovery();
-
-			//checkBTPermissions();
 
             IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             context.registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
@@ -293,13 +289,4 @@ public class GameMain extends ApplicationAdapter{
 	public void startBTConnection(BluetoothDevice device, UUID uuid){
 		mBluetoothConnection.startClient(device,uuid);
 	}
-
-//	public void checkBTPermissions() {
-//		if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M){
-//			int permissionCheck = context.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
-//			permissionCheck += context.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
-//		}else{
-//			System.out.println("fuck this shit im out");
-//		}
-//	}
 }
