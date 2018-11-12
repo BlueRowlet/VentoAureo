@@ -1,6 +1,7 @@
 package com.figer.game.Game;
 
 import com.badlogic.gdx.utils.Array;
+import com.figer.game.System.Input;
 import com.figer.game.System.Renderer;
 
 import java.util.Collections;
@@ -17,11 +18,28 @@ public class CardCollection {
         for(Card c:cards) c.draw(renderer);
     }
 
+    public void update(Input input){
+        boolean dingDong = false;
+        for(int i=cards.size-1; i>=0; i--){
+            Card c = cards.get(i);
+            if(c.touchInside(input) && !dingDong){
+                c.setScale(1.2f);
+                dingDong = true;
+            } else {
+                c.setScale(1f);
+            }
+        }
+    }
+
     public void sort(){
         cards.sort(new Comparator<Card>() {
             @Override
             public int compare(Card o1, Card o2) {
-                return Float.compare(o1.getX(), o2.getX());
+                float c1 = o1.getX();
+                float c2 = o2.getX();
+                if (o1.getScale() > 1) c1 = Renderer.WIDTH;
+                if (o2.getScale() > 1) c2 = Renderer.WIDTH;
+                return Float.compare(c1, c2);
             }
         });
     }

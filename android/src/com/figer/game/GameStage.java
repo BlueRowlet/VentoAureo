@@ -13,7 +13,6 @@ public class GameStage extends Stage {
 
     //Cards
     private CardCollection cardCollection;
-    private Card fuccboi;
 
     public GameStage(StageManager stageManager) {
         super(stageManager);
@@ -21,8 +20,6 @@ public class GameStage extends Stage {
         for(int cardNumber = 0; cardNumber <= 10; cardNumber++){
             cardCollection.addCard("cardBack", 10 + cardNumber*30, cardNumber*5);
         }
-
-        fuccboi = cardCollection.addCard("cardBack", 100, 100);
     }
 
     @Override
@@ -32,9 +29,8 @@ public class GameStage extends Stage {
 
     @Override
     public void update(Input input) {
+        cardCollection.update(input);
         cardCollection.sort();
-        fuccboi.setX(input.getX());
-        fuccboi.setY(input.getY());
     }
 
     @Override

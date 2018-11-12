@@ -122,6 +122,12 @@ public class Renderer {
         batch.draw(region, x, y);
     }
 
+    public void drawTextureRegionScaled(TextureRegion region, float x, float y, float scale) {
+        float w = region.getRegionWidth() * scale;
+        float h = region.getRegionHeight() * scale;
+        batch.draw(region, x, y, w, h);
+    }
+
     public void drawTextureRegion(TextureRegion region, float x, float y, float opacity) {
         batch.setColor(1, 1, 1, opacity);
         drawTextureRegion(region, x, y);
@@ -186,8 +192,8 @@ public class Renderer {
         //MathUtils.random(0,10);       --random number
     }
 
-    public void drawCard(float x, float y, String name) {
-        this.drawTextureRegion(assetPool.getCardRegion(name), x, y);
+    public void drawCard(float x, float y, String name, float scale) {
+        this.drawTextureRegionScaled(assetPool.getCardRegion(name), x, y,scale);
     }
 
     // *********************************************************************************************
