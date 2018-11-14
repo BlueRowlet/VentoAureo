@@ -1,10 +1,12 @@
 package com.figer.game.Game;
 
+import com.figer.game.System.AssetPool;
 import com.figer.game.System.Input;
 import com.figer.game.System.Renderer;
 
 public class Card {
     public static final int W = 96, H = 128;
+
     private String name;
     private float x, y, scale;
 
@@ -15,8 +17,21 @@ public class Card {
         scale = 1;
     }
 
-    public void draw(Renderer renderer){
-        renderer.drawCard(x, y, name, scale);
+    public void draw(Renderer renderer) {
+            renderer.drawCard(x, y, name, scale);
+    }
+
+    public void drawPreview(Renderer renderer){
+        renderer.drawCard(500, 100, name, 3f);
+    }
+
+    public boolean touchInside(Input input){
+        return (input.getX() > x && input.getX() < x + W &&
+                    input.getY() > y && input.getY() < y + H);
+    }
+
+    public String getName() {
+        return name;
     }
 
     public float getX() {
@@ -37,11 +52,6 @@ public class Card {
 
     public void setScale(float scale) {
         this.scale = scale;
-    }
-
-    public boolean touchInside(Input input){
-        return (input.getX() > x && input.getX()<x+W &&
-                input.getY() > y && input.getY()<y+H);
     }
 
     public float getScale() {

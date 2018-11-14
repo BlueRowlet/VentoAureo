@@ -187,13 +187,8 @@ public class Renderer {
     // * CUSTOM SHIT
     // *********************************************************************************************
 
-    public void drawCardBack(float x, float y){
-        this.drawTextureRegion(assetPool.getCardBackRegion(), x, y);
-        //MathUtils.random(0,10);       --random number
-    }
-
     public void drawCard(float x, float y, String name, float scale) {
-        this.drawTextureRegionScaled(assetPool.getCardRegion(name), x, y,scale);
+        this.drawTextureRegionScaled(assetPool.getCardRegion(name), x, y, scale);
     }
 
     // *********************************************************************************************

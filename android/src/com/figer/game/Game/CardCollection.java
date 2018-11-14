@@ -9,22 +9,28 @@ import java.util.Comparator;
 
 public class CardCollection {
     private Array<Card> cards;
+    private boolean hovered;
 
     public CardCollection() {
         cards = new Array<Card>();
     }
 
     public void draw(Renderer renderer){
-        for(Card c:cards) c.draw(renderer);
+        for(Card c:cards) {
+            c.draw(renderer);
+            if(hovered) {
+                c.drawPreview(renderer);
+            }
+        }
     }
 
     public void update(Input input){
-        boolean dingDong = false;
+        hovered = false;
         for(int i=cards.size-1; i>=0; i--){
             Card c = cards.get(i);
-            if(c.touchInside(input) && !dingDong){
+            if(c.touchInside(input) && !hovered){
                 c.setScale(1.2f);
-                dingDong = true;
+                hovered = true;
             } else {
                 c.setScale(1f);
             }

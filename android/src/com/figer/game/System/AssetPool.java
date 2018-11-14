@@ -6,40 +6,33 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class AssetPool {
-    Texture cardBack;
-    private TextureRegion cardBackRegion;
-
+    //Textures
     Texture cards;
-    private ObjectMap<String, TextureRegion> cardRegions;
+
+    //Texture Regions
+    private ObjectMap<String, TextureRegion> cardRegion;
 
     public AssetPool(){
-        cardBack = new Texture(Gdx.files.internal("cardBack.png"));
-        cardBackRegion = new TextureRegion(cardBack);
-        cardBackRegion.flip(false, true);
+        cards = new Texture(Gdx.files.internal("cardBack.png"));
 
-        cards = new Texture(Gdx.files.internal("badlogic.jpg"));
-        cardRegions = new ObjectMap<>();
-        cardRegions.put("cardBack", new TextureRegion(cardBack, 0,0,96,128));
+        cardRegion = new ObjectMap<>();
+        cardRegion.put("cardBack", new TextureRegion(cards, 0,0,96,128));
         //SpriteSheet
 //        cardRegions.put("DankCard1", new TextureRegion(cards,0, 0, 128, 128));
 //        cardRegions.put("DankCard2", new TextureRegion(cards,0, 128, 128, 128));
 //        cardRegions.put("DankCard3", new TextureRegion(cards, 128, 0, 128, 128));
 //        cardRegions.put("DankCard4", new TextureRegion(cards,128, 128, 128, 128));
-        for (TextureRegion region : cardRegions.values()) {
+        for (TextureRegion region : cardRegion.values()) {
             region.flip(false, true);
         }
     }
 
     public void dispose(){
-        cardBack.dispose();
-    }
-
-    public TextureRegion getCardBackRegion() {
-        return cardBackRegion;
+        cards.dispose();
     }
 
     public TextureRegion getCardRegion(String name) {
-        return cardRegions.get(name);
+        return cardRegion.get(name);
     }
 
 }
