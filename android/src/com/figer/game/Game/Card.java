@@ -17,6 +17,11 @@ public class Card {
         scale = 1;
     }
 
+    public Card(String name){
+        this.name = name;
+        scale = 1;
+    }
+
     public void draw(Renderer renderer) {
             renderer.drawCard(x, y, name, scale);
     }

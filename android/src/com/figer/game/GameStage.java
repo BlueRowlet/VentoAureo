@@ -17,9 +17,6 @@ public class GameStage extends Stage {
     public GameStage(StageManager stageManager) {
         super(stageManager);
         cardCollection = new CardCollection();
-        for(int cardNumber = 0; cardNumber <= 10; cardNumber++){
-            cardCollection.addCard("cardBack", 10 + cardNumber*30, 25);
-        }
     }
 
     @Override

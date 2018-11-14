@@ -36,7 +36,7 @@ public class GameMain extends ApplicationAdapter{
 		//Stage Magic
         stages = new Array<Stage>();
         stageManager = new StageManager();
-        stages.add(new InitialStage(stageManager, context), new GameStage(stageManager));
+        stages.add(new InitialStage(stageManager, context), new GameStage(stageManager),new DeckBuilderStage(stageManager));
 	}
 
 	@Override

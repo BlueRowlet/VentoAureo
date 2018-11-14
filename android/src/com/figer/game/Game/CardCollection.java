@@ -1,5 +1,6 @@
 package com.figer.game.Game;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.figer.game.System.Input;
 import com.figer.game.System.Renderer;
@@ -21,6 +22,14 @@ public class CardCollection {
             if(hovered) {
                 c.drawPreview(renderer);
             }
+        }
+    }
+
+    public void drawList(Renderer renderer){
+        int yPos = 0;
+        for(Card c:cards){
+            renderer.drawText(c.getName(), 5, 5+yPos*20, Renderer.WHITE);
+            yPos++;
         }
     }
 
@@ -54,5 +63,15 @@ public class CardCollection {
         Card card = new Card(name, x, y);
         cards.add(card);
         return card;
+    }
+
+    public Card addEmptyCard(String name){
+        Card card = new Card(name);
+        cards.add(card);
+        return card;
+    }
+
+    public int randomCardPicker(){
+        return MathUtils.random(0, cards.size - 1);
     }
 }

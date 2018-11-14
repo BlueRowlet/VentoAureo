@@ -32,6 +32,7 @@ public class InitialStage extends Stage {
     private Button btnDiscover;
     private Button btnSearch;
     private Button btnConnect;
+    private Button btnDeck;
     private List deviceList;
 
     private Context context;
@@ -49,6 +50,7 @@ public class InitialStage extends Stage {
         btnDiscover = new Button(25, 90, 200, 50, "Enable Discoverability");
         btnSearch = new Button(25, 155, 200, 50, "Search");
         btnConnect = new Button(25, 220,200, 50, "Connect");
+        btnDeck = new Button(25, 285, 200, 50, "Deck Builder");
 
         deviceList = new List(300, 25, 200, 30);
     }
@@ -60,6 +62,7 @@ public class InitialStage extends Stage {
         btnDiscover.draw(renderer);
         btnSearch.draw(renderer);
         btnConnect.draw(renderer);
+        btnDeck.draw(renderer);
         deviceList.draw(renderer);
     }
 
@@ -70,6 +73,7 @@ public class InitialStage extends Stage {
         btnDiscover.update(input);
         btnSearch.update(input);
         btnConnect.update(input);
+        btnDeck.update(input);
         deviceList.update(input);
 
         // Consume signals
@@ -84,6 +88,9 @@ public class InitialStage extends Stage {
         }
         if (btnConnect.consumeSignal() != Signal.NULL) {
             startConnection();
+        }
+        if (btnDeck.consumeSignal() != Signal.NULL){
+            stageManager.requestNumber(StageManager.DECK);
         }
         if (deviceList.consumeSignal() != Signal.NULL) {
             connectedDevice = deviceAddresses.getElementByIndex(deviceList.getSelectedIndex());

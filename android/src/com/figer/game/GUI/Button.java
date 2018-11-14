@@ -30,4 +30,8 @@ public class Button extends Surface {
     public void drawContent(Renderer renderer) {
         renderer.drawTextCentered(text, x, y, w, h, pushedOffset, Renderer.WHITE);
     }
+
+    public String getText() {
+        return text;
+    }
 }

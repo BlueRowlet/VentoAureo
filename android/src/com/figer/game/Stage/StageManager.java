@@ -4,8 +4,9 @@ import com.badlogic.gdx.utils.Array;
 
 public class StageManager {
     public static final int NULL = -1;
-    public static final int INITIAL = 1;
-    public static final int GAME = 0;
+    public static final int INITIAL = 2;
+    public static final int GAME = 1;
+    public static final int DECK = 0;
     private int number;
     private int requestNumber;
 
